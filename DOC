@@ -1,0 +1,35 @@
+#delete folder
+rm -rf deploy
+#creating directory
+mkdir -m 777 deploy
+#go inisde direcyory
+cd deploy
+#copy the war file
+cp /var/lib/jenkins/workspace/package/target/works-with-heroku-1.0.war  .
+#create docker file
+touch dockerfile
+#go inside docker file
+echo "
+FROM Centos:latest
+#authorname 
+MAINTAINER abc
+#update image
+RUN yum udpate -y
+#Install java
+RUN yum install java-1.8* -y
+#install wget
+RUN yum install wget -y
+#download tomcat package
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.54/bin/apache-tomcat-9.0.54.tar.gz
+#extract the tar
+CMD tar -zxvf apache-tomcat-9.0.54.tar.gz
+#Deloy on tomcat
+COPY works-with-heroku-1.0.war /apache-tomcat-9.0.54.tar.gz/webapps/bin
+#start catalina service
+CMD "/bin/./startup.sh"
+#create port number
+EXPOSE 8080" >>dockerfile
+#buid image 
+sudo docker build -t works-with-heroku-1.0.war:version1 .
+
+
